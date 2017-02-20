@@ -1,4 +1,4 @@
 .datetime
-  h6.time 10:30 AM
-  h2.dayofweek monday
-  h4.datestring February 20, 2017
+  h6.time #{date.hour}:#{date.minutes}:#{date.seconds}
+  h2.dayofweek #{date.dayOfWeek}
+  h4.datestring #{date.month} #{date.date}, #{date.year}
