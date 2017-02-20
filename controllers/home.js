@@ -1,5 +1,5 @@
 const DarkSky = require('dark-sky')
-const forecast = new DarkSky('44256f903bb244724e13b4b44774c9d7')
+const forecast = new DarkSky(process.env.DARKSKY_SECRET)
 
 /**
  * GET /
