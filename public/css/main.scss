@@ -68,3 +68,98 @@ textarea {
 .fa {
   margin-right: 6px;
 }
+
+// Date & Time Section Styles
+.datetime {
+  text-align: right;
+  min-width: 100%;
+
+  h2, h4, h6 {
+    padding: 0px 0px;
+    margin: 0px 0px;
+  }
+
+  > h6.time {
+    font-family: 'Oswald', serif;
+    font-size: 28px;
+  }
+
+  > h2.dayofweek {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: 32px;
+    letter-spacing: 7.5px;
+  }
+
+  > h4.datestring {
+    font-family: 'Oswald', serif;
+    font-size: 48px;
+  }
+
+}
+
+// Weather Section Styles
+.weather {
+  text-align: right;
+  min-width: 100%;
+
+  h6.temp {
+    font-size: 160px;
+    letter-spacing: 10px;
+  }
+
+  i {
+    text-align: center;
+    padding-top: 40px;
+    font-size: 85px;
+    min-width: 100%;
+  }
+
+  h4.highlow {
+    text-align: center;
+    font-size: 38px;
+  }
+}
+
+// Event Section Styles
+.events {
+  text-align: right;
+
+  p {
+    font-family: 'Raleway', sans-serif;
+    font-size: 24px;
+  }
+
+  h1 {
+    font-family: 'Raleway', sans-serif;
+  }
+
+  li {
+    list-style-type: none;
+  }  
+}
+
+// Stock Data Section
+.stockdata {
+  text-align: right;
+
+  h1 {
+    font-family: 'Raleway', sans-serif;
+  }
+
+  li {
+    list-style-type: none;
+  }  
+}
+
+.commute {
+  text-align: right;
+
+  h1 {
+    font-family: 'Raleway', sans-serif;
+  }
+
+  li {
+    list-style-type: none;
+  }  
+}
