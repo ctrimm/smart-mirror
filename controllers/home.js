@@ -48,18 +48,20 @@ const months = [
  */
 exports.index = (req, res, next) => {
   async.parallel({
-    weather: function(callback) {
-      var weather = forecast
-        .latitude('40.4406')
-        .longitude('-79.9959')
-        .exclude('minutely,hourly,')
-        .get()
-        .then(res => {
-            callback(null, res.currently);
-        })
-        .catch(err => {
-            console.log(err)
+    biking: function(callback) {
+      var biking = https.get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+homeAddress+'&destinations='+workAddress+'&mode=bicycling&units=imperial&key='+googleSecret+'', function(res) {
+        // Buffer the body entirely for processing as a whole.
+        var bodyChunks = [];
+        res.on('data', function(chunk) {
+          // You can process streamed parts here...
+          bodyChunks.push(chunk);
+        }).on('end', function() {
+          var body = Buffer.concat(bodyChunks);
+          viewData.biking = body;
+          callback(null, JSON.parse(body.toString()));
+          // ...and/or process the entire body here.
         });
+      });
     },
     currentDate: function(callback) {
       var currentDate = [];
@@ -85,21 +87,6 @@ exports.index = (req, res, next) => {
         date: date,
         month: month,
         year: year
-      });
-    },
-    biking: function(callback) {
-      var biking = https.get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+homeAddress+'&destinations='+workAddress+'&mode=bicycling&units=imperial&key='+googleSecret+'', function(res) {
-        // Buffer the body entirely for processing as a whole.
-        var bodyChunks = [];
-        res.on('data', function(chunk) {
-          // You can process streamed parts here...
-          bodyChunks.push(chunk);
-        }).on('end', function() {
-          var body = Buffer.concat(bodyChunks);
-          viewData.biking = body;
-          callback(null, JSON.parse(body.toString()));
-          // ...and/or process the entire body here.
-        });
       });
     },
     driving: function(callback) {
@@ -131,8 +118,20 @@ exports.index = (req, res, next) => {
           });
         }
       }, callback(null, robinhoodStocks));
+    },
+    weather: function(callback) {
+      var weather = forecast
+        .latitude('40.4406')
+        .longitude('-79.9959')
+        .exclude('minutely,hourly,')
+        .get()
+        .then(res => {
+            callback(null, res.currently);
+        })
+        .catch(err => {
+            console.log(err)
+        });
     }
-
   }, function(err, results) {
       // results is now equals to: {one: 1, two: 2}
       console.log('results', results);
