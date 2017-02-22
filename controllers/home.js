@@ -1,46 +1,21 @@
 const async = require('async');
 const DarkSky = require('dark-sky');
+const https = require('https');
+
 const forecast = new DarkSky(process.env.DARKSKY_SECRET);
 const stocks = ['JBLU', 'HA', 'LUV', 'BCS', 'RBS', 'INSY']
-var robinhoodCreds = {
+const robinhoodCreds = {
     username: process.env.ROBINHOOD_USERNAME,
     password: process.env.ROBINHOOD_PASSWORD
 };
 
 var robinhoodStocks = [];
 
+var viewData = {};
+
 const googleSecret = process.env.GOOGLEDISTANCE_SECRET;
 const homeAddress = '1111+East+Carson+Street+Pittsburgh,+PA+15203';
 const workAddress = '40+24+Street+Pittsburgh+PA+15222';
-const https = require('https');
-
-// var biking = https.get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+homeAddress+'&destinations='+workAddress+'&mode=bicycling&units=imperial&key='+googleSecret+'', function(res) {
-//   // Buffer the body entirely for processing as a whole.
-//   var bodyChunks = [];
-//   res.on('data', function(chunk) {
-//     // You can process streamed parts here...
-//     bodyChunks.push(chunk);
-//   }).on('end', function() {
-//     var body = Buffer.concat(bodyChunks);
-//     // console.log('BIKING: ' + body);
-//     // ...and/or process the entire body here.
-//   })
-// });
-
-// console.log('biking - ', biking);
-
-var driving = https.get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+homeAddress+'&destinations='+workAddress+'&mode=driving&units=imperial&key='+googleSecret+'', function(res) {
-  // Buffer the body entirely for processing as a whole.
-  var bodyChunks = [];
-  res.on('data', function(chunk) {
-    // You can process streamed parts here...
-    bodyChunks.push(chunk);
-  }).on('end', function() {
-    var body = Buffer.concat(bodyChunks);
-    // console.log('DRIVING: ' + body);
-    // ...and/or process the entire body here.
-  })
-});
 
 const days = [
   'Sunday',
@@ -66,8 +41,6 @@ const months = [
   'November',
   'December'
 ];
-
-// console.log('weather - ', weather.currently);
 
 /**
  * GET /
@@ -123,8 +96,23 @@ exports.index = (req, res, next) => {
           bodyChunks.push(chunk);
         }).on('end', function() {
           var body = Buffer.concat(bodyChunks);
-          console.log('BIKING: ' + body);
-          callback(null, body);
+          viewData.biking = body;
+          callback(null, JSON.parse(body.toString()));
+          // ...and/or process the entire body here.
+        });
+      });
+    },
+    driving: function(callback) {
+      var driving = https.get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+homeAddress+'&destinations='+workAddress+'&mode=bicycling&units=imperial&key='+googleSecret+'', function(res) {
+        // Buffer the body entirely for processing as a whole.
+        var bodyChunks = [];
+        res.on('data', function(chunk) {
+          // You can process streamed parts here...
+          bodyChunks.push(chunk);
+        }).on('end', function() {
+          var body = Buffer.concat(bodyChunks);
+          viewData.driving = body;
+          callback(null, JSON.parse(body.toString()));
           // ...and/or process the entire body here.
         });
       });
