@@ -8,20 +8,6 @@ var robinhoodCreds = {
 };
 
 var robinhoodStocks = [];
- 
-var Robinhood = require('robinhood')(robinhoodCreds, function(){
-    //Robinhood is connected and you may begin sending commands to the api.
-    for (var i = 0, len = stocks.length; i < len; i++) {
-      Robinhood.quote_data(stocks[i], function(error, response, body) {
-        if (error) {
-            console.error(error);
-            process.exit(1);
-        }
-        console.log(body.results);
-        robinhoodStocks.push(body.results);
-      });
-    }
-});
 
 const googleSecret = process.env.GOOGLEDISTANCE_SECRET;
 const homeAddress = '1111+East+Carson+Street+Pittsburgh,+PA+15203';
@@ -142,6 +128,21 @@ exports.index = (req, res, next) => {
           // ...and/or process the entire body here.
         });
       });
+    },
+    robinhood: function(callback) {
+      var Robinhood = require('robinhood')(robinhoodCreds, function(){
+        //Robinhood is connected and you may begin sending commands to the api.
+        for (var i = 0, len = stocks.length; i < len; i++) {
+          Robinhood.quote_data(stocks[i], function(error, response, body) {
+            if (error) {
+                console.error(error);
+                process.exit(1);
+            }
+            console.log(body.results);
+            robinhoodStocks.push(body.results);
+          });
+        }
+      }, callback(null, robinhoodStocks));
     }
 
   }, function(err, results) {
@@ -153,7 +154,8 @@ exports.index = (req, res, next) => {
         title: 'Home',
         title: 'Home',
         date: results.currentDate,
-        weather: results.weather
+        weather: results.weather,
+        robinhoodStocks: robinhoodStocks
       });
   });
 };
