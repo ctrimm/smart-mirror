@@ -17,31 +17,6 @@ const googleSecret = process.env.GOOGLEDISTANCE_SECRET;
 const homeAddress = '1111+East+Carson+Street+Pittsburgh,+PA+15203';
 const workAddress = '40+24+Street+Pittsburgh+PA+15222';
 
-const days = [
-  'Sunday',
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday'
-];
-
-const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December'
-];
-
 /**
  * GET /
  * Home page.
@@ -61,32 +36,6 @@ exports.index = (req, res, next) => {
           callback(null, JSON.parse(body.toString()));
           // ...and/or process the entire body here.
         });
-      });
-    },
-    currentDate: function(callback) {
-      var currentDate = [];
-
-      var d = new Date();
-      var hour = d.getHours();
-      var minutes = d.getMinutes();
-      var seconds = d.getSeconds();
-      var dayOfWeek = days[d.getDay()];
-      var date = d.getDate();
-      var month = months[d.getMonth()];
-      var year = d.getFullYear();
-
-      if(minutes < 10) {
-          minutes = '0'+minutes;
-      }
-
-      callback(null, {
-        hour: hour,
-        minutes: minutes,
-        seconds: seconds,
-        dayOfWeek: dayOfWeek,
-        date: date,
-        month: month,
-        year: year
       });
     },
     driving: function(callback) {
@@ -140,7 +89,6 @@ exports.index = (req, res, next) => {
       res.render('home', {
         title: 'Home',
         title: 'Home',
-        date: results.currentDate,
         weather: results.weather,
         robinhoodStocks: robinhoodStocks
       });
