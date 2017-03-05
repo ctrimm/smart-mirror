@@ -145,7 +145,16 @@ textarea {
 
   li {
     list-style-type: none;
-  }  
+  }
+
+  h3.stock-up {
+    color: green;
+    margin: 0;
+  }
+  h3.stock-down {
+    color: red;
+    margin: 0;
+  }
 }
 
 // Commute Time Section

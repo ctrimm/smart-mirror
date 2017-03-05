@@ -3,13 +3,14 @@ const DarkSky = require('dark-sky');
 const https = require('https');
 
 const forecast = new DarkSky(process.env.DARKSKY_SECRET);
-const stocks = ['JBLU', 'HA', 'LUV', 'BCS', 'RBS', 'INSY']
+const myStocks = ['JBLU', 'HA', 'LUV', 'BCS', 'RBS', 'INSY']
 const robinhoodCreds = {
     username: process.env.ROBINHOOD_USERNAME,
     password: process.env.ROBINHOOD_PASSWORD
 };
 
 var robinhoodStocks = [];
+var stocks = [];
 
 const days = [
   'Sunday',
@@ -65,13 +66,13 @@ exports.index = (req, res, next) => {
     robinhood: function(callback) {
       var Robinhood = require('robinhood')(robinhoodCreds, function(){
         //Robinhood is connected and you may begin sending commands to the api.
-        for (var i = 0, len = stocks.length; i < len; i++) {
-          Robinhood.quote_data(stocks[i], function(error, response, body) {
+        for (var i = 0, len = myStocks.length; i < len; i++) {
+          if(robinhoodStocks.length > 0) { robinhoodStocks = []; }
+          Robinhood.quote_data(myStocks[i], function(error, response, body) {
             if (error) {
                 console.error(error);
                 process.exit(1);
             }
-            // console.log(body.results);
             robinhoodStocks.push(body.results);
           });
         }
@@ -107,6 +108,13 @@ exports.index = (req, res, next) => {
       bikingTime = results.biking.rows[0].elements[0].duration.text;
       drivingTime = results.driving.rows[0].elements[0].duration.text;
 
+      if(stocks.length > 0) { stocks = []; }
+
+      robinhoodStocks.forEach(function(stock) {
+        console.log('stock - ', stock[0]);
+        stocks.push(stock[0]);
+      });
+
       console.log('robinhoodStocks - ', robinhoodStocks);
 
       res.render('home', {
@@ -117,7 +125,7 @@ exports.index = (req, res, next) => {
         currentTemp: currentTemp,
         weatherMax: todayMaxTemp,
         weatherMin: todayMinTemp,
-        robinhoodStocks: robinhoodStocks
+        stocks: stocks
       });
   });
 };
