@@ -92,7 +92,7 @@ exports.index = (req, res, next) => {
         });
     }
   }, function(err, results) {
-      console.log('results', results);
+      // console.log('results', results);
       if (err) { return next(err); }
 
       dailyData = results.weather.daily.data;
@@ -111,11 +111,8 @@ exports.index = (req, res, next) => {
       if(stocks.length > 0) { stocks = []; }
 
       robinhoodStocks.forEach(function(stock) {
-        console.log('stock - ', stock[0]);
         stocks.push(stock[0]);
       });
-
-      console.log('robinhoodStocks - ', robinhoodStocks);
 
       res.render('home', {
         title: 'Home',
