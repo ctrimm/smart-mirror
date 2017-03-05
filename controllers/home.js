@@ -11,7 +11,18 @@ const robinhoodCreds = {
 
 var robinhoodStocks = [];
 
-var viewData = {};
+const days = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday'
+];
+
+var d = new Date();
+const todayDate = days[d.getDate()];
 
 const googleSecret = process.env.GOOGLEDISTANCE_SECRET;
 const homeAddress = '1111+East+Carson+Street+Pittsburgh,+PA+15203';
@@ -32,7 +43,6 @@ exports.index = (req, res, next) => {
           bodyChunks.push(chunk);
         }).on('end', function() {
           var body = Buffer.concat(bodyChunks);
-          viewData.biking = body;
           callback(null, JSON.parse(body.toString()));
           // ...and/or process the entire body here.
         });
@@ -47,7 +57,6 @@ exports.index = (req, res, next) => {
           bodyChunks.push(chunk);
         }).on('end', function() {
           var body = Buffer.concat(bodyChunks);
-          viewData.driving = body;
           callback(null, JSON.parse(body.toString()));
           // ...and/or process the entire body here.
         });
@@ -62,7 +71,7 @@ exports.index = (req, res, next) => {
                 console.error(error);
                 process.exit(1);
             }
-            console.log(body.results);
+            // console.log(body.results);
             robinhoodStocks.push(body.results);
           });
         }
@@ -75,7 +84,7 @@ exports.index = (req, res, next) => {
         .exclude('minutely,hourly,')
         .get()
         .then(res => {
-            callback(null, res.currently);
+            callback(null, res);
         })
         .catch(err => {
             console.log(err)
@@ -86,10 +95,32 @@ exports.index = (req, res, next) => {
       console.log('results', results);
       // res.render('home', { title: 'Home', date: results.currentDate, weather: weather});
       if (err) { return next(err); }
+
+      dailyData = results.weather.daily.data;
+      todaysWeather = dailyData.filter(function(day){
+        d = new Date(0);
+        d.setUTCSeconds(day.time);
+        return days[d.getDay()] === todayDate;
+      });
+
+      // console.log('todaysWeather - ', todaysWeather);
+
+      currentTemp = Math.round(results.weather.currently.temperature);
+      todayMaxTemp = Math.round(todaysWeather[0].temperatureMax);
+      todayMinTemp = Math.round(todaysWeather[0].temperatureMin);
+      bikingTime = results.biking.rows[0].elements[0].duration.text;
+      drivingTime = results.driving.rows[0].elements[0].duration.text;
+
+      console.log('results.biking - ', results.biking.rows[0].elements[0].duration.text);
+
       res.render('home', {
         title: 'Home',
         title: 'Home',
-        weather: results.weather,
+        biking: bikingTime,
+        driving: drivingTime,
+        currentTemp: currentTemp,
+        weatherMax: todayMaxTemp,
+        weatherMin: todayMinTemp,
         robinhoodStocks: robinhoodStocks
       });
   });
