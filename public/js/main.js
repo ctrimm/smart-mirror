@@ -1,6 +1,12 @@
 $(document).ready(function() {
 
   // Place JavaScript code here...
+
+  // REFRESH THE PAGE EVERY 30 MINUTES
+  // setInterval(function() {
+  //   window.location.reload();
+  // }, 300000); 
+
   const days = [
     'Sunday',
     'Monday',
@@ -43,6 +49,12 @@ $(document).ready(function() {
     let d = now.getDate();
     let m = months[now.getMonth()];
     let y = now.getFullYear();
+
+    if(seconds === 0) {
+        seconds = "00";
+    } else if (seconds < 10) {
+        seconds = "0" + seconds;
+    }
 
     if(minutes === 0) {
         minutes = "00";

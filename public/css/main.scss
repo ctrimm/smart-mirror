@@ -125,13 +125,9 @@ textarea {
 .events {
   text-align: right;
 
-  p {
+  h1, h3 {
     font-family: 'Raleway', sans-serif;
-    font-size: 24px;
-  }
-
-  h1 {
-    font-family: 'Raleway', sans-serif;
+    margin: 0;
   }
 
   li {
@@ -152,6 +148,7 @@ textarea {
   }  
 }
 
+// Commute Time Section
 .commute {
   text-align: right;
 

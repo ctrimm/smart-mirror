@@ -91,9 +91,7 @@ exports.index = (req, res, next) => {
         });
     }
   }, function(err, results) {
-      // results is now equals to: {one: 1, two: 2}
       console.log('results', results);
-      // res.render('home', { title: 'Home', date: results.currentDate, weather: weather});
       if (err) { return next(err); }
 
       dailyData = results.weather.daily.data;
@@ -103,15 +101,13 @@ exports.index = (req, res, next) => {
         return days[d.getDay()] === todayDate;
       });
 
-      // console.log('todaysWeather - ', todaysWeather);
-
       currentTemp = Math.round(results.weather.currently.temperature);
       todayMaxTemp = Math.round(todaysWeather[0].temperatureMax);
       todayMinTemp = Math.round(todaysWeather[0].temperatureMin);
       bikingTime = results.biking.rows[0].elements[0].duration.text;
       drivingTime = results.driving.rows[0].elements[0].duration.text;
 
-      console.log('results.biking - ', results.biking.rows[0].elements[0].duration.text);
+      console.log('robinhoodStocks - ', robinhoodStocks);
 
       res.render('home', {
         title: 'Home',
