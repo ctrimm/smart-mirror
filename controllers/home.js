@@ -23,7 +23,7 @@ const days = [
 ];
 
 var d = new Date();
-const todayDate = days[d.getDate()];
+const today = days[d.getDay()];
 
 const googleSecret = process.env.GOOGLEDISTANCE_SECRET;
 const homeAddress = '1111+East+Carson+Street+Pittsburgh,+PA+15203';
@@ -50,7 +50,7 @@ exports.index = (req, res, next) => {
       });
     },
     driving: function(callback) {
-      var driving = https.get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+homeAddress+'&destinations='+workAddress+'&mode=bicycling&units=imperial&key='+googleSecret+'', function(res) {
+      var driving = https.get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+homeAddress+'&destinations='+workAddress+'&mode=driving&units=imperial&key='+googleSecret+'', function(res) {
         // Buffer the body entirely for processing as a whole.
         var bodyChunks = [];
         res.on('data', function(chunk) {
@@ -99,7 +99,7 @@ exports.index = (req, res, next) => {
       todaysWeather = dailyData.filter(function(day){
         d = new Date(0);
         d.setUTCSeconds(day.time);
-        return days[d.getDay()] === todayDate;
+        return days[d.getDay()] === today;
       });
 
       currentTemp = Math.round(results.weather.currently.temperature);
