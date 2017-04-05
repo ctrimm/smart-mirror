@@ -125,6 +125,7 @@ exports.index = (req, res, next) => {
       currentTemp = Math.round(results.weather.currently.temperature);
       todayMaxTemp = Math.round(todaysWeather[0].temperatureMax);
       todayMinTemp = Math.round(todaysWeather[0].temperatureMin);
+      weatherIcon = todaysWeather[0].icon;
       bikingTime = results.biking.rows[0].elements[0].duration.text;
       drivingTime = results.driving.rows[0].elements[0].duration.text;
       // walkingTime = results.walking.rows[0].elements[0].duration.text;
@@ -153,6 +154,7 @@ exports.index = (req, res, next) => {
           driving: drivingTime,
           // walking: walkingTime,
           currentTemp: currentTemp,
+          weatherIcon: weatherIcon,
           weatherMax: todayMaxTemp,
           weatherMin: todayMinTemp,
           stocks: stocks
