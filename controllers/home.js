@@ -63,20 +63,20 @@ exports.index = (req, res, next) => {
         });
       });
     },
-    walking: function(callback) {
-      var walking = https.get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+workAddress+'&destinations='+homeAddress+'&mode=walking&units=imperial&key='+googleSecret+'', function(res) {
-        // Buffer the body entirely for processing as a whole.
-        var bodyChunks = [];
-        res.on('data', function(chunk) {
-          // You can process streamed parts here...
-          bodyChunks.push(chunk);
-        }).on('end', function() {
-          var body = Buffer.concat(bodyChunks);
-          callback(null, JSON.parse(body.toString()));
-          // ...and/or process the entire body here.
-        });
-      });
-    },
+    // walking: function(callback) {
+    //   var walking = https.get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+workAddress+'&destinations='+homeAddress+'&mode=walking&units=imperial&key='+googleSecret+'', function(res) {
+    //     // Buffer the body entirely for processing as a whole.
+    //     var bodyChunks = [];
+    //     res.on('data', function(chunk) {
+    //       // You can process streamed parts here...
+    //       bodyChunks.push(chunk);
+    //     }).on('end', function() {
+    //       var body = Buffer.concat(bodyChunks);
+    //       callback(null, JSON.parse(body.toString()));
+    //       // ...and/or process the entire body here.
+    //     });
+    //   });
+    // },
     robinhood: function(callback) {
       var Robinhood = require('robinhood')(robinhoodCreds, function(){
         //Robinhood is connected and you may begin sending commands to the api.
@@ -90,6 +90,12 @@ exports.index = (req, res, next) => {
             robinhoodStocks.push(body.results);
           });
         }
+
+        if (typeof robinhoodStocks === 'undefined' && robinhoodStocks.length === 0) {
+          // the array is undefined or empty... sleep a bit...
+          setTimeout(function() {}, 2000);
+        }
+
       }, callback(null, robinhoodStocks));
     },
     weather: function(callback) {
@@ -121,24 +127,37 @@ exports.index = (req, res, next) => {
       todayMinTemp = Math.round(todaysWeather[0].temperatureMin);
       bikingTime = results.biking.rows[0].elements[0].duration.text;
       drivingTime = results.driving.rows[0].elements[0].duration.text;
-      walkingTime = results.walking.rows[0].elements[0].duration.text;
+      // walkingTime = results.walking.rows[0].elements[0].duration.text;
 
       if(stocks.length > 0) { stocks = []; }
 
-      robinhoodStocks.forEach(function(stock) {
-        stocks.push(stock[0]);
+      // Async waterfall in order to load in all robinhood stock data
+      async.waterfall([
+          pushRobinHoodStocks,
+          renderHome,
+      ], function (err, result) {
+          // result now equals 'done'
       });
 
-      res.render('home', {
-        title: 'Home',
-        title: 'Home',
-        biking: bikingTime,
-        driving: drivingTime,
-        walking: walkingTime,
-        currentTemp: currentTemp,
-        weatherMax: todayMaxTemp,
-        weatherMin: todayMinTemp,
-        stocks: stocks
-      });
+      function pushRobinHoodStocks(callback) {
+        robinhoodStocks.forEach(function(stock) {
+          stocks.push(stock[0]);
+        });
+        callback(null);
+      }
+      function renderHome(callback) {
+        res.render('home', {
+          title: 'Home',
+          title: 'Home',
+          biking: bikingTime,
+          driving: drivingTime,
+          // walking: walkingTime,
+          currentTemp: currentTemp,
+          weatherMax: todayMaxTemp,
+          weatherMin: todayMinTemp,
+          stocks: stocks
+        });
+        callback(null);
+      }
   });
 };

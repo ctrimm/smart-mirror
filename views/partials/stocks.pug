@@ -1,12 +1,14 @@
 .stockdata
     h1 Stock Data
-    ul#slides.swiper-wrapper
+    ul
         each stock in stocks
             if ((stock.previous_close - stock.last_trade_price).toFixed(3) > 0)
                 li
-                    h3.stock-up <i class="fa fa-arrow-up"></i>#{stock.symbol}
+                    h3.stock-up <i class="fa fa-arrow-up"></i>
+                        span.symbol #{stock.symbol}
                         span #{(stock.previous_close - stock.last_trade_price).toFixed(3)}
             else
                 li
-                    h3.stock-down <i class="fa fa-arrow-down"></i>#{stock.symbol}
+                    h3.stock-down <i class="fa fa-arrow-down"></i>
+                        span.symbol #{stock.symbol}
                         span #{(stock.previous_close - stock.last_trade_price).toFixed(3)}

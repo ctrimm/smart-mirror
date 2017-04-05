@@ -150,10 +150,21 @@ textarea {
   h3.stock-up {
     color: green;
     margin: 0;
+    padding-right: 10px;
   }
+
   h3.stock-down {
     color: red;
     margin: 0;
+    padding-right: 10px;
+  }
+
+  h3 > span {
+    padding-left: 10px;
+
+    .symbol {
+      text-align: left;
+    }
   }
 }
 
@@ -169,8 +180,10 @@ textarea {
     margin: 0;
   }
 
-  .fa span {
+  i > span {
     font-family: 'Oswald', serif;
+    padding-left: 10px;
+    text-align: left;
   }
 
   li {
