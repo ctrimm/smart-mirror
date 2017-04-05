@@ -36,7 +36,7 @@ const workAddress = '40+24+Street+Pittsburgh+PA+15222';
 exports.index = (req, res, next) => {
   async.parallel({
     biking: function(callback) {
-      var biking = https.get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+homeAddress+'&destinations='+workAddress+'&mode=bicycling&units=imperial&key='+googleSecret+'', function(res) {
+      var biking = https.get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+workAddress+'&destinations='+homeAddress+'&mode=bicycling&units=imperial&key='+googleSecret+'', function(res) {
         // Buffer the body entirely for processing as a whole.
         var bodyChunks = [];
         res.on('data', function(chunk) {
@@ -50,7 +50,21 @@ exports.index = (req, res, next) => {
       });
     },
     driving: function(callback) {
-      var driving = https.get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+homeAddress+'&destinations='+workAddress+'&mode=driving&units=imperial&key='+googleSecret+'', function(res) {
+      var driving = https.get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+workAddress+'&destinations='+homeAddress+'&mode=driving&units=imperial&key='+googleSecret+'', function(res) {
+        // Buffer the body entirely for processing as a whole.
+        var bodyChunks = [];
+        res.on('data', function(chunk) {
+          // You can process streamed parts here...
+          bodyChunks.push(chunk);
+        }).on('end', function() {
+          var body = Buffer.concat(bodyChunks);
+          callback(null, JSON.parse(body.toString()));
+          // ...and/or process the entire body here.
+        });
+      });
+    },
+    walking: function(callback) {
+      var walking = https.get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+workAddress+'&destinations='+homeAddress+'&mode=walking&units=imperial&key='+googleSecret+'', function(res) {
         // Buffer the body entirely for processing as a whole.
         var bodyChunks = [];
         res.on('data', function(chunk) {
@@ -107,6 +121,7 @@ exports.index = (req, res, next) => {
       todayMinTemp = Math.round(todaysWeather[0].temperatureMin);
       bikingTime = results.biking.rows[0].elements[0].duration.text;
       drivingTime = results.driving.rows[0].elements[0].duration.text;
+      walkingTime = results.walking.rows[0].elements[0].duration.text;
 
       if(stocks.length > 0) { stocks = []; }
 
@@ -119,6 +134,7 @@ exports.index = (req, res, next) => {
         title: 'Home',
         biking: bikingTime,
         driving: drivingTime,
+        walking: walkingTime,
         currentTemp: currentTemp,
         weatherMax: todayMaxTemp,
         weatherMin: todayMinTemp,
