@@ -3,5 +3,31 @@
     .col-xs-9
       h6.temp #{currentTemp}°
     .col-xs-3
-      i.fa.fa-sun-o
+      if (weatherIcon == 'day-sunny')
+        i.wi.wi-forecast-io-clear-day
+      if (weatherIcon == 'night-clear')
+        i.wi.wi-forecast-io-clear-night
+      if (weatherIcon == 'rain')
+        i.wi.wi-forecast-io-rain
+      if (weatherIcon == 'snow')
+        i.wi.wi-forecast-io-snow
+      if (weatherIcon == 'sleet')
+        i.wi.wi-forecast-io-sleet
+      if (weatherIcon == 'strong-wind')
+        i.wi.wi-forecast-io-wind
+      if (weatherIcon == 'fog')
+        i.wi.wi-forecast-io-fog
+      if (weatherIcon == 'cloudy')
+        i.wi.wi-forecast-io-cloudy
+      if (weatherIcon == 'day-cloudy')
+        i.wi.wi-forecast-io-partly-cloudy-day
+      if (weatherIcon == 'night-cloudy')
+        i.wi.wi-forecast-io-partly-cloudy-night
+      if (weatherIcon == 'hail')
+        i.wi.wi-forecast-io-hail
+      if (weatherIcon == 'thunderstorm')
+        i.wi.wi-forecast-io-thunderstorm
+      if (weatherIcon == 'tornado')
+        i.wi.wi-forecast-io-tornado
+
       h4.highlow #{weatherMin}°/#{weatherMax}°
