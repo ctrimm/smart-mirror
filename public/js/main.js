@@ -73,4 +73,10 @@ $(document).ready(function() {
 
   setInterval(setDate, 1000);
 
+  // Reload the page every 20 minutes.
+  setTimeout(function() {
+  console.log('timeout');
+    location.reload();
+  }, 200000);
+
 });
